@@ -1,6 +1,6 @@
 [
   { "question": "What is hoisting in JavaScript?", "difficulty": "basic" },
-  { "question": "What’s the difference between normal functions and arrow functions?", "difficulty": "basic" },
+  { "question": "What's the difference between normal functions and arrow functions?", "difficulty": "basic" },
   { "question": "What are closures in JS?", "difficulty": "basic" },
   { "question": "What is JSX?", "difficulty": "basic" },
   { "question": "What is React and what are its key features?", "difficulty": "basic" },

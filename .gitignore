@@ -34,8 +34,19 @@ frontend/*.sw?
 *.sln
 *.sw?
 
+livekit
+
 */.env
 backend/KMS
 backend/livekit
 backend/livekit2
+backend/mongo_client.py
+backend/redis_client.py
 backend/__pycache__
+
+livekitAgent/test2.py
+livekitAgent/main_v1.py
+livekitAgent/interview_history.json
+livekitAgent/interview_qna.json
+
+*/*/__pycache__

@@ -1,7 +1,6 @@
 import { useState, useCallback, useRef } from "react";
 import { LiveKitRoom, RoomAudioRenderer, useRoomContext } from "@livekit/components-react";
 import "@livekit/components-styles";
-import SimpleVoiceAssistant from "./SimpleVoiceAssistant";
 import {
   useVoiceAssistant,
   BarVisualizer,
@@ -28,7 +27,7 @@ const VoiceAssistantInterface = () => {
   const [userSpeech, setUserSpeech] = useState("");
   const [question, setQuestion] = useState("");
   const [llmResponse, setLLMResponse] = useState("");
-  const [isListening, setIsListening] = useState(false);
+  const [interviewAgentSpeech, setInterviewAgentSpeech] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const { state, audioTrack, agentTranscriptions } = useVoiceAssistant();
   const localParticipant = useLocalParticipant();
@@ -46,13 +45,14 @@ const VoiceAssistantInterface = () => {
     if (called.current) return; // skip if already called
     called.current = true;
     try {
+      setInterviewAgentSpeech(true);
       const response = await room.localParticipant.performRpc({
         destinationIdentity: agentIdentity,
         method: 'confirm_answer',
         payload: 'first_request',
         responseTimeout: 15000
       });
-      setQuestion(response)
+      
       console.log('✅ RPC 1 response: ', response);
     } catch (error) {
       console.error('❌ RPC call failed:', error);
@@ -92,11 +92,20 @@ const VoiceAssistantInterface = () => {
   if (!lastMessage) return; // Avoid all following logic if there's no message
 
   if (lastMessage.type === "agent") {
+    if (!interviewAgentSpeech){
       setLLMResponse(lastMessage.text);
+    }else{
+      setQuestion(lastMessage.text)
+    }
   }
 
   if (lastMessage.type === "user") {
-      setUserSpeech(lastMessage.text);
+      setInterviewAgentSpeech(false);
+      if(allMessages.length > 2 && allMessages.at(-2).type =="user"){
+        setUserSpeech(prev=> `${prev} ${lastMessage.text}`)
+      }else{
+        setUserSpeech(lastMessage.text);
+      }
   }
 }, [agentTranscriptions, userTranscriptions]);
 
@@ -118,6 +127,9 @@ const VoiceAssistantInterface = () => {
   };
   const callAgent = async(methodName, payload="")=>{
     try {
+      if(methodName !== "re_answer"){
+        setInterviewAgentSpeech(true);
+      }
       const response = await room.localParticipant.performRpc({
         destinationIdentity: agentIdentity,
         method: methodName,
@@ -126,8 +138,6 @@ const VoiceAssistantInterface = () => {
       });
       if(methodName === "re_answer" ){
         setIsProcessing(false)
-      } else{
-        setQuestion(response)
       }
       console.log('✅ RPC response:', response);
     } catch (error) {
@@ -137,6 +147,7 @@ const VoiceAssistantInterface = () => {
   const handleConfirmAnswer = () => {
     console.log(`SENDING CONFIRM ANSWER llmResponse ${llmResponse}`)
     callAgent("confirm_answer", llmResponse);
+    setUserSpeech("");
     setLLMResponse(prev => "");
   };
 
@@ -483,7 +494,7 @@ const VoiceAssistantInterface = () => {
   );
 };
 
-const LiveKitModal = ({ setShowSupport }) => {
+const LiveKitModal = ({  }) => {
   const [isSubmittingName, setIsSubmittingName] = useState(true);
   const [name, setName] = useState("");
   const [token, setToken] = useState(null);
@@ -584,7 +595,7 @@ const LiveKitModal = ({ setShowSupport }) => {
                   Connect
                 </button>
                 <button
-                  onClick={() => setShowSupport(false)}
+                  onClick={() => null}
                   style={{
                     padding: "10px 20px",
                     background: "#f44336",
@@ -606,7 +617,6 @@ const LiveKitModal = ({ setShowSupport }) => {
               video={false}
               audio={true}
               onDisconnected={() => {
-                setShowSupport(false);
                 setIsSubmittingName(true);
               }}
             >
