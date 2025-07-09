@@ -2,7 +2,7 @@
 from dataclasses import dataclass, field
 from typing import Optional
 from livekit.agents import Agent, ChatContext
-from config.config import INTERVIEW_INSTRUCTIONS
+from config.config import INTERVIEW_INSTRUCTIONS, NUM_EASY, NUM_MEDIUM, NUM_HARD
 import random
 import json
 import logging
@@ -11,6 +11,7 @@ from redisLogic.redis_client import getCandidateData
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("Interview_data.py")
+
 #----------------------------Helper methods--------------------------------
 def get_latest_resume():
     try:
@@ -26,7 +27,10 @@ def question_bank_loader():
     with open('questions.json', 'r') as file:
         return json.load(file)
 
-def select_questions(question_bank, num_easy=2, num_medium=2, num_hard=1):
+def select_questions(question_bank):
+    num_easy = NUM_EASY
+    num_medium = NUM_MEDIUM
+    num_hard = NUM_HARD
     # Filter questions by difficulty
     easy_qs = [q for q in question_bank if q['difficulty'] == 'basic']
     medium_qs = [q for q in question_bank if q['difficulty'] == 'intermediate']

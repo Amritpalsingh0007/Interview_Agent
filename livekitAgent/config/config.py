@@ -1,3 +1,5 @@
+
+#Prompts Config
 INTERVIEW_INSTRUCTIONS = """
 Your role is to conduct an interview using a predefined set of questions and additional context from the candidate’s resume and previous answers.
 
@@ -26,3 +28,8 @@ Your role is to refine the speech input (e.g., STT output) exactly as if the use
 Output format: A refined version of the user's input in the first person, as if the user just spoke it fluently.
 """
 
+
+#Configure Number of easy, medium and hard question to be asked using below varialbes respectively
+NUM_EASY=2
+NUM_MEDIUM=2
+NUM_HARD=1

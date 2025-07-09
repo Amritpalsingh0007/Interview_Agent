@@ -49,4 +49,5 @@ livekitAgent/main_v1.py
 livekitAgent/interview_history.json
 livekitAgent/interview_qna.json
 
+livekitAgent/__pycache__
 */*/__pycache__

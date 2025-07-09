@@ -8,7 +8,7 @@ from data_class.interview_data import InterviewData
 from Agent.agent import STTRefiningAgent
 from config.config import STT_REFINING_INSTRUCTIONS
 from RPC.agent_rpc import confirm_answer, skip_question, re_answer
-
+from test2 import CustomTTS
 import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("main_entrypoint")
@@ -26,8 +26,8 @@ async def entrypoint(ctx: JobContext):
         # stt=CustomSTT("medium"),
         stt = groq.STT(model="whisper-large-v3-turbo",language="en"),
         llm=google.LLM(model="gemini-2.0-flash"),
-        # tts=CustomTTS(),
-        tts=cartesia.TTS(),
+        tts=CustomTTS(),
+        # tts=cartesia.TTS(),
         vad=silero.VAD.load()
     )
 

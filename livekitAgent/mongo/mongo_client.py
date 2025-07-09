@@ -2,6 +2,8 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 import logging
 import os
+from dotenv import load_dotenv
+load_dotenv()
 logging.getLogger("pymongo").setLevel(logging.WARNING)
 
 # Connect to MongoDB with authentication

@@ -23,8 +23,8 @@ async def confirm_answer(payload, session: AgentSession):
         # Step 1: Save the current STT refining agent
         if not (payload.payload == "first_request"):
             # Save the answer from the previous question
-            if interview_data.qna_history:
-                interview_data.qna_history.append({"question":interview_data.interview_history.items[-1]["content"],"answer":payload.payload})
+            if interview_data.interview_history:
+                interview_data.qna_history.append({"question":interview_data.interview_history.items[-1].text_content,"answer":payload.payload})
                 logger.info("💾 Saved previous answer to QnA history")
             
             interview_data.interview_history.add_message(role="user", content=payload.payload)
@@ -105,8 +105,8 @@ async def skip_question(payload, session):
     #skipping to the next predefine question question
     interview_data.number_of_follow_ups = 99
     # Mark current question as skipped
-    if interview_data.qna_history:
-        interview_data.qna_history.append({"question":interview_data.interview_history.items[-1]["content"],"answer":"[Question Skipped]"})
+    if interview_data.interview_history:
+        interview_data.qna_history.append({"question":interview_data.interview_history.items[-1].text_content,"answer":"[Question Skipped]"})
     interview_data.interview_history.add_message("user", "[Question Skipped]")
    
     # Use similar switching logic as confirm_answer
